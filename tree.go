@@ -1,19 +1,19 @@
 package silo
 
 type Tree struct {
-	Doc Document `json:"document"`
+	T []Doc `json:"tree"`
 }
 
-type Document struct {
-	Typ   string  `json:"type,omitempty"`
+type Doc struct {
+	Type  string  `json:"type"`
 	Label string  `json:"label,omitempty"`
-	Nodes []*Node `json:"nodes,omitempty"`
+	Nodes []*Node `json:"nodes"`
 }
 
 type Node struct {
 	Parent string `json:"parent"`
-	Kind   string `json:"kind,omitempty"`
-	Unique string `json:"unique,omitempty"`
-	Typ    string `json:"typ,omitempty"`
-	Label  string `json:"label,omitempty"`
+	Type   string `json:"type"`
+	Kind   string `json:"kind"`
+	Unique string `json:"unique"`
+	Label  string `json:"label"`
 }
