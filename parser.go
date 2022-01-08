@@ -1,30 +1,30 @@
 package silo
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"log"
-	"os"
 )
 
-func Parse(path string) {
-	dec := createDecoder(path)
+func Parse(in []byte) error {
+	dec := createDecoder(in)
 
 	for dec.More() {
 		node := make(map[string]interface{})
 		err := dec.Decode(&node)
 		if err != nil {
 			log.Printf("something went wrong %s", err)
+			return errors.New("failed to decode node")
 		}
 
 		log.Printf("Item %v", node)
 	}
+
+	return nil
 }
 
-func createDecoder(path string) *json.Decoder {
-	file, err := os.Open(path)
-	if err != nil {
-		log.Printf("failed to open file %s", err)
-	}
-
-	return json.NewDecoder(file)
+func createDecoder(in []byte) *json.Decoder {
+	reader := bytes.NewReader(in)
+	return json.NewDecoder(reader)
 }
