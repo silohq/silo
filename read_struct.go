@@ -1,8 +1,8 @@
 package silo
 
 import (
+	"fmt"
 	"reflect"
-	"strings"
 )
 
 func StructRead(mgr *manager, in interface{}) {
@@ -21,9 +21,7 @@ func StructRead(mgr *manager, in interface{}) {
 
 		if typ == "flat-node" {
 			label := val.FieldByName("Label").String()
-			keys := strings.Split(parent, ".")
-			keys = append(keys, label)
-			merged := strings.Join(keys[:], ".")
+			merged := fmt.Sprintf("%s.%s", parent, label)
 			mgr.createchildbkt(merged)
 		}
 	}
