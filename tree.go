@@ -1,11 +1,13 @@
 package silo
 
 type Tree struct {
-	T []*Doc `json:"tree"`
+	T []*Node `json:"tree"`
 }
 
 type Doc struct {
-	Nodes []*Node `json:"nodes"`
+	Parent string  `json:"parent"`
+	Type   string  `json:"type"`
+	Nodes  []*Node `json:"nodes"`
 }
 
 type Node struct {
