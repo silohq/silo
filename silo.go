@@ -8,25 +8,35 @@ import (
 )
 
 type Silo struct {
-	conn *bolt.DB
+	conn   *bolt.DB
+	config *Config
+	root   *Tree
 }
 
-func New(path string) (*Silo, error) {
-	db, err := bolt.Open(path, 0666, nil)
+type Config struct {
+	DocPath string
+	DBPath  string
+}
+
+func new(conf *Config) (*Silo, error) {
+	db, err := bolt.Open(conf.DBPath, 0666, nil)
 	if err != nil {
-		log.Printf("cannot start %s", err)
+		log.Printf("cannot start db: %s", err)
 		return nil, errors.New("cannot start: failed to init db")
 	}
 
+	tree, err := ParseFromFile(conf.DocPath)
+	if err != nil {
+		log.Printf("failed to parse doc definition: %s", err)
+	}
+
 	return &Silo{
-		conn: db,
+		config: conf,
+		conn:   db,
+		root:   tree,
 	}, nil
 }
 
-func (s *Silo) Parse(filename string) (*Tree, error) {
-	return ParseFromFile(filename)
+func New(conf *Config) (*Silo, error) {
+	return new(conf)
 }
-
-// func (s *Silo) Manager() *Manager {
-// 	return worker.New(s.conn)
-// }
