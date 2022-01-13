@@ -1,0 +1,85 @@
+{
+    "tree": [
+        {
+            "parent": "root",
+            "type": "document",
+            "label": "user",
+            "nodes": [
+                {
+                    "parent": "user",
+                    "type": "flat-node",
+                    "kind": "string",
+                    "unique": false,
+                    "label": "name"
+                },
+                {
+                    "label": "contact",
+                    "parent": "user",
+                    "type": "nested-node",
+                    "kind": "object",
+                    "nodes": [
+                        {
+                            "parent": "user.contact",
+                            "type": "flat-node",
+                            "kind": "string",
+                            "unique": false,
+                            "label": "primary"
+                        },
+                        {
+                            "parent": "user.contact",
+                            "type": "flat-node",
+                            "kind": "string",
+                            "unique": false,
+                            "label": "secondary"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "parent": "root",
+            "type": "document",
+            "label": "groups",
+            "nodes": [
+                {
+                    "parent": "groups",
+                    "type": "flat-node",
+                    "kind": "string",
+                    "unique": false,
+                    "label": "name"
+                },
+                {
+                    "label": "contact",
+                    "parent": "groups",
+                    "type": "nested-node",
+                    "kind": "object",
+                    "nodes": [
+                        {
+                            "parent": "groups.contact",
+                            "type": "flat-node",
+                            "kind": "string",
+                            "unique": false,
+                            "label": "primary"
+                        },
+                        {
+                            "parent": "groups.contact",
+                            "type": "nested-node",
+                            "kind": "string",
+                            "unique": false,
+                            "label": "secondary",
+                            "nodes": [
+                                {
+                                    "parent": "groups.contact.secondary",
+                                    "type": "flat-node",
+                                    "unique": false,
+                                    "kind": "string",
+                                    "label": "email"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
