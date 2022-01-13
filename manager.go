@@ -86,6 +86,7 @@ func (m *manager) save(key string, bkt *bolt.Bucket) {
 	m.buckets[key] = bkt
 }
 
+//fix silent fail
 func (m *manager) insert(tree map[string]interface{}) {
 	bkts := m.all()
 	id := uuid.New().String()
