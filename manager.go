@@ -2,9 +2,9 @@ package silo
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
+	"github.com/google/uuid"
 	bolt "go.etcd.io/bbolt"
 )
 
@@ -34,7 +34,6 @@ func (m *manager) createbkt(name string) error {
 		}
 		m.buckets[name] = bkt
 	}
-
 	return nil
 }
 
@@ -53,10 +52,8 @@ func (m *manager) createchildbkt(graph string) error {
 		base := strings.Join(nodes[0:i], ".")
 		bkt, ok := m.parent(base)
 		if ok {
-			log.Printf("exisyts %v", key)
 			tmp, err := bkt.CreateBucketIfNotExists([]byte(nodes[i]))
 			if err != nil {
-				log.Printf("failed to create child bucket %s", err)
 				return err
 			}
 			m.save(key, tmp)
@@ -67,7 +64,6 @@ func (m *manager) createchildbkt(graph string) error {
 }
 
 func (m *manager) parent(name string) (*bolt.Bucket, bool) {
-	log.Printf("name %s", name)
 	if val, ok := m.buckets[name]; ok {
 		return val, true
 	}
@@ -87,6 +83,38 @@ func (m *manager) all() map[string]*bolt.Bucket {
 }
 
 func (m *manager) save(key string, bkt *bolt.Bucket) {
-	log.Printf("key %s", key)
 	m.buckets[key] = bkt
+}
+
+func (m *manager) insert(tree map[string]interface{}) {
+	bkts := m.all()
+	id := uuid.New().String()
+	for k, v := range tree {
+		if bkt, ok := bkts[k]; ok {
+			typ := fmt.Sprintf("%T", v)
+			if typ == "string" {
+				bkt.Put([]byte(id), []byte(v.(string)))
+			}
+		}
+	}
+}
+
+func (m *manager) find(key string, match interface{}, tree map[string]interface{}) {
+	bkt, ok := m.parent(key)
+	if !ok {
+		return
+	}
+
+	csr := bkt.Cursor()
+	for id, v := csr.First(); id != nil; id, v = csr.Next() {
+		if string(v) == match {
+			for k := range tree {
+				bkt, ok := m.parent(k)
+				if ok {
+					tree[k] = bkt.Get(id)
+				}
+			}
+			return
+		}
+	}
 }

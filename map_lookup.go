@@ -2,10 +2,9 @@ package silo
 
 import (
 	"fmt"
-	"log"
 )
 
-func nestedmapaccess(in map[string]interface{}, tree map[string][]string) {
+func nestedmapaccess(in map[string]interface{}, tree map[string]interface{}) {
 	for k, v := range in {
 		typ := fmt.Sprintf("%T", v)
 		tree[k] = []string{""}
@@ -13,16 +12,19 @@ func nestedmapaccess(in map[string]interface{}, tree map[string][]string) {
 			deepaccess(k, v.(map[string]interface{}), tree)
 		}
 	}
-
-	log.Printf("all %v", tree)
 }
 
-func deepaccess(parent string, in map[string]interface{}, tree map[string][]string) {
+func deepaccess(parent string, in map[string]interface{}, tree map[string]interface{}) {
 	for k, v := range in {
 		typ := fmt.Sprintf("%T", v)
-		tree[parent] = append(tree[parent], k)
 		if typ == "map[string]interface {}" {
-			deepaccess(parent, v.(map[string]interface{}), tree)
+			key := fmt.Sprintf("%s.%s", parent, k)
+			deepaccess(key, v.(map[string]interface{}), tree)
+		}
+
+		if typ == "string" {
+			key := fmt.Sprintf("%s.%s", parent, k)
+			tree[key] = v
 		}
 	}
 }
