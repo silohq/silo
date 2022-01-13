@@ -3,7 +3,7 @@ package silo
 import (
 	"errors"
 	"fmt"
-	"log"
+	"strings"
 
 	bolt "go.etcd.io/bbolt"
 )
@@ -36,8 +36,7 @@ func new(conf *Config) (*Silo, error) {
 		return nil, fmt.Errorf("manager create failed: %s", err)
 	}
 
-	StructRead(mgr, tree)
-	log.Printf("all %v", mgr.all())
+	structread(mgr, tree)
 
 	return &Silo{
 		config: conf,
@@ -52,6 +51,24 @@ func New(conf *Config) (*Silo, error) {
 }
 
 // create parses the command template and inserts into database
-func Create(command string, payload map[string]interface{}) {
+func (s *Silo) Create(command string, payload map[string]interface{}) {
+	history := make(map[string]interface{})
+	nestedmapaccess(payload, history)
+	s.mgr.insert(history)
+}
 
+func (s *Silo) Find(command string, match interface{}, dest map[string]interface{}) error {
+	history := make(map[string]interface{})
+	nestedmapaccess(dest, history)
+	s.mgr.find(command, match, history)
+	for k, v := range history {
+		keys := strings.Split(k, ".")
+		if len(keys) > 1 {
+			_, err := mapreverse(dest, v, keys)
+			if err != nil {
+				return fmt.Errorf("lookup failed %s", err)
+			}
+		}
+	}
+	return nil
 }
