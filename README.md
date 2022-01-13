@@ -1,29 +1,41 @@
 # silo
 
 experimental document based access for boltdb
+create is currently only implemented at the root level.
 
-```json
-{
-  "users": {
-    "id": 0,
-    "name": "",
-    "contact": {
-      "primary": "",
-      "secondary": ""
-    }
-  }
-}
+```go
+pkg.Create("/user", map[string]interface{}{
+    "user": map[string]interface{}{
+        "name": "last",
+        "contact": map[string]interface{}{
+            "primary":   "primary",
+            "secondary": "secondary",
+        },
+    },
+})
 ```
 
-create /users/ {payload}
-payload as below
+find is implemented at any level
 
-```json
-{
-  "name": "name",
-  "contact": {
-    "primary": "",
-    "secondary": ""
-  }
+```go
+m := map[string]interface{}{
+    "user": map[string]interface{}{
+        "name": "",
+        "contact": map[string]interface{}{
+            "primary":   "",
+            "secondary": "",
+        },
+    },
 }
+
+pkg.Find("user.name", "last", m)
+
+```
+
+Final query language will interact with db as below:
+
+```
+    create /user {...payload}
+
+    find /user/name "last"
 ```
