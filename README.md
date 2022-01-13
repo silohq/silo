@@ -48,6 +48,25 @@ pkg.Create("user", map[string]interface{}{
 find is implemented at any level but is currently very slow for
 larger stores
 
+[m] defines the fields you would prefer to access . such that if you
+passed in a json object as below. only the buckets containing the below values
+would be queried
+
+```json
+{
+  "user": {
+    "name": "",
+    "contact": {
+      "primary": ""
+    }
+  }
+}
+```
+
+issues
+
+- currently only working with []byte type when fetching values
+
 ```go
 m := map[string]interface{}{
     "user": map[string]interface{}{
