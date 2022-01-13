@@ -26,6 +26,8 @@ if err != nil {
 
 ## Features
 
+### create
+
 Features are currently very limited.
 
 - create is currently only implemented at the root level.
@@ -44,6 +46,8 @@ pkg.Create("user", map[string]interface{}{
     },
 })
 ```
+
+### find
 
 find is implemented at any level but is currently very slow for
 larger stores
