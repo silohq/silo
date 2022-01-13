@@ -45,7 +45,8 @@ pkg.Create("user", map[string]interface{}{
 })
 ```
 
-find is implemented at any level
+find is implemented at any level but is currently very slow for
+larger stores
 
 ```go
 m := map[string]interface{}{
@@ -65,7 +66,7 @@ pkg.Find("user.name", "last", m)
 Final query language will interact with db as below:
 
 ```
-    create /user {...payload}
+create /user {...payload}
 
-    find /user/name "last"
+find /user/name "last"
 ```
