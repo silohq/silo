@@ -53,13 +53,13 @@ func New(conf *Config) (*Silo, error) {
 // create parses the command template and inserts into database
 func (s *Silo) Create(command string, payload map[string]interface{}) {
 	history := make(map[string]interface{})
-	nestedmapaccess(payload, history)
+	flatten(payload, history)
 	s.mgr.insert(history)
 }
 
 func (s *Silo) Find(command string, match interface{}, dest map[string]interface{}) error {
 	history := make(map[string]interface{})
-	nestedmapaccess(dest, history)
+	flatten(dest, history)
 	s.mgr.find(command, match, history)
 	for k, v := range history {
 		keys := strings.Split(k, ".")
@@ -70,5 +70,12 @@ func (s *Silo) Find(command string, match interface{}, dest map[string]interface
 			}
 		}
 	}
+	return nil
+}
+
+func (s *Silo) Delete(command string, match interface{}, dest map[string]interface{}) error {
+	history := make(map[string]interface{})
+	flatten(dest, history)
+	s.mgr.delete(command, match, history)
 	return nil
 }

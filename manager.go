@@ -119,3 +119,23 @@ func (m *manager) find(key string, match interface{}, tree map[string]interface{
 		}
 	}
 }
+
+func (m *manager) delete(key string, match interface{}, tree map[string]interface{}) {
+	bkt, ok := m.parent(key)
+	if !ok {
+		return
+	}
+
+	csr := bkt.Cursor()
+	for id, v := csr.First(); id != nil; id, v = csr.Next() {
+		if string(v) == match {
+			for k := range tree {
+				bkt, ok := m.parent(k)
+				if ok {
+					bkt.Delete(id)
+				}
+			}
+			return
+		}
+	}
+}

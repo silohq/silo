@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func nestedmapaccess(in map[string]interface{}, tree map[string]interface{}) {
+func flatten(in map[string]interface{}, tree map[string]interface{}) {
 	for k, v := range in {
 		typ := fmt.Sprintf("%T", v)
 		tree[k] = []string{""}
