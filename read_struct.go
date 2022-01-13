@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func StructRead(mgr *manager, in interface{}) {
+func structread(mgr *manager, in interface{}) {
 	val := extract(in)
 	parent := val.FieldByName("Parent").String()
 	typ := val.FieldByName("Type").String()
@@ -31,7 +31,7 @@ func StructRead(mgr *manager, in interface{}) {
 		//currently only checking for slice type
 		if f.Kind() == reflect.Slice {
 			for j := 0; j < f.Len(); j++ {
-				StructRead(mgr, f.Index(j).Interface())
+				structread(mgr, f.Index(j).Interface())
 			}
 		}
 	}
